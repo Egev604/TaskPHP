@@ -1,13 +1,12 @@
 <?php
-$host = 'localhost'; 
-$dbname = 'postgres';
-$user = 'postgres';
-$password = 'root';
-header('Content-Type: application/json');
-try {
-    $dbh = new PDO("pgsql:host=$host;dbname=$dbname;", $user, $password);
-    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+include 'database.php';
 
+header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
+try {
+    
     $search = isset($_GET['search']) ? $_GET['search'] : '';
 
     if (!empty($search)) {

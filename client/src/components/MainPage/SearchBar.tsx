@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import { TextField, Button } from '@mui/material';
+// SearchBar.tsx
+import React from 'react';
+import { TextField } from '@mui/material';
+
 interface SearchBarProps {
     onSearch: (query: string) => void;
-    searchQuery: string;
-    setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch, searchQuery, setSearchQuery }) => {
-    const handleSearch = () => {
+
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+    const [searchQuery, setSearchQuery] = React.useState('');
+
+    React.useEffect(() => {
         onSearch(searchQuery);
-    };
+    }, [searchQuery, onSearch]);
 
     return (
         <div>
@@ -18,9 +21,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, searchQuery, setSearchQ
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <Button variant="contained" onClick={handleSearch}>
-                Search
-            </Button>
         </div>
     );
 };

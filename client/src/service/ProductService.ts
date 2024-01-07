@@ -1,21 +1,22 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import axios from "axios";
+import {BASE_URL} from "./AuthService";
+import {IResponseProducts} from "../Model/Response";
 import {IProduct} from "../Model/Product";
-export const productAPI = createApi({
-    reducerPath:'productAPI',
-    baseQuery:fetchBaseQuery({baseUrl: '',
-        headers: {
-            'Content-Type': 'application/json',
-        },}),
-    tagTypes:['Product'],
-    endpoints:(build)=> ({
-        fetchSearchProduct: build.query<IProduct[], { search:string }>({
-            query: (search)=>({
-                url: ``,
-                params: {
-                    _search:search,
-                }
-            }),
-            providesTags:result => ['Product']
-        }),
-    })
-})
+
+export const fetchProducts = async (search: string): Promise<IResponseProducts> => {
+    try {
+        const response = await axios.get<IProduct[]>(`${BASE_URL}products.php`, {
+            params: {
+                search: search,
+            },
+        });
+        return {
+            data: response.data,
+        };
+    } catch (error) {
+        console.error('Ошибка при выполнении запроса fetchProducts:', error);
+        return {
+            error: 'Произошла ошибка при получении данных',
+        };
+    }
+};

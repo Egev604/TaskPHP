@@ -1,6 +1,12 @@
 <?php
-header('Content-Type: application/json');
 
+
+include 'database.php';
+
+header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (!isset($data['login'], $data['password'])) {
@@ -8,22 +14,14 @@ if (!isset($data['login'], $data['password'])) {
     exit;
 }
 
-$host = 'localhost'; 
-$dbname = 'postgres';
-$user = 'postgres';
-$password = 'root';
-
 try {
-    $dbh = new PDO("pgsql:host=$host;dbname=$dbname;", $user, $password);
-    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
     $stmt = $dbh->prepare('SELECT * FROM users WHERE login = :login');
     $stmt->bindParam(':login', $data['login']);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$user) {
-        echo json_encode(['error' => 'Пользователь не найден']);
+        echo json_encode(['error' => 'Login не найден']);
         exit;
     }
     $hashedPassword = md5($user['salt'] . $data['password']);
